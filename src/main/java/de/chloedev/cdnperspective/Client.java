@@ -18,7 +18,7 @@ public class Client implements ClientModInitializer {
     private static Client instance;
     private KeyBinding keyBinding;
     private Mod mod;
-    private boolean serversideDisabled = false;
+    private boolean forceDisabled = false;
 
     @Override
     public void onInitializeClient() {
@@ -27,7 +27,7 @@ public class Client implements ClientModInitializer {
         KeyBindingRegistryImpl.registerKeyBinding(keyBinding = new KeyBinding("key.cdnperspective.toggle", InputUtil.Type.KEYSYM, 293, "key.cdnperspective.category"));
         this.mod = new Mod(0, 0, false);
         ClientPlayNetworking.registerGlobalReceiver(new Identifier("cdnperspective", "is_disallowed"), (client, handler, buf, responseSender) -> {
-            this.serversideDisabled = true;
+            this.forceDisabled = true;
             if (client.player != null) {
                 client.player.sendMessage(Text.literal("§7[§bCDNPerspective§7] §6Oh! This server disabled the use of this mod. This means you can't use this feature on this server!"));
             }
@@ -47,7 +47,11 @@ public class Client implements ClientModInitializer {
         return mod;
     }
 
-    public boolean isServersideDisabled() {
-        return serversideDisabled;
+    public boolean isForceDisabled() {
+        return forceDisabled;
+    }
+
+    public void setForceDisabled(boolean forceDisabled) {
+        this.forceDisabled = forceDisabled;
     }
 }

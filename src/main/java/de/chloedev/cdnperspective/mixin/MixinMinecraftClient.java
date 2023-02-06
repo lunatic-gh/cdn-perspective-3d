@@ -3,6 +3,7 @@ package de.chloedev.cdnperspective.mixin;
 import de.chloedev.cdnperspective.Client;
 import de.chloedev.cdnperspective.mod.Mod;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.KeyBinding;
@@ -28,7 +29,7 @@ public class MixinMinecraftClient {
 
     @Inject(method = "tick", at = @At("HEAD"))
     public void tick(CallbackInfo ci) {
-        if (Client.getInstance().isServersideDisabled()) {
+        if (Client.getInstance().isForceDisabled()) {
             return;
         }
         if (this.player == null) {
@@ -58,5 +59,10 @@ public class MixinMinecraftClient {
         if (mod.isEnabled() && this.options.getPerspective() != Perspective.THIRD_PERSON_BACK) {
             mod.toggleEnabled();
         }
+    }
+
+    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("TAIL"))
+    public void b(Screen screen, CallbackInfo ci) {
+        Client.getInstance().setForceDisabled(false);
     }
 }
