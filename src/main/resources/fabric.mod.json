@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "cdnperspective",
+  "version": "${version}",
+  "name": "CDN Perspective 3D",
+  "description": "Allows for moving the camera 360 Degrees without changing movement-direction.",
+  "authors": [
+    "ChloeCDN"
+  ],
+  "contact": {
+    "website": "https://donate.chloedev.de"
+  },
+  "license": "MIT",
+  "icon": "assets/cdnperspective/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "de.chloedev.cdnperspective.Client"
+    ]
+  },
+  "mixins": [
+    "cdnperspective.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.14",
+    "minecraft": ">=1.19.3"
+  }
+}
