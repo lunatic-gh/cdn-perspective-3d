@@ -7,7 +7,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
@@ -28,7 +27,6 @@ public class Client implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         instance = this;
-        KeyBindingRegistryImpl.addCategory("key.categories.cdnperspective");
         KeyBindingHelper.registerKeyBinding(keyBinding = new KeyBinding("key.cdnperspective.toggle", InputUtil.Type.KEYSYM, 293, "key.categories.cdnperspective"));
         this.mod = new Mod(0, 0, false);
         ClientPlayNetworking.registerGlobalReceiver(new Identifier("cdnperspective", "is_disallowed"), (client, handler, buf, responseSender) -> {

@@ -16,9 +16,8 @@ public class MixinMouse {
     private void updateMouseA(CallbackInfo ci, double d, double e, double x, double y, double f, double g, double h, int invert) {
         Mod mod = Client.getInstance().getMod();
         if (mod.isEnabled()) {
-            mod.setYaw((float) (mod.getYaw() + x / 8.0D));
-            mod.setPitch((float) (mod.getPitch() + y * invert / 8.0D));
-            if (Math.abs(mod.getPitch()) > 90.0F) mod.setPitch((mod.getPitch() > 0.0F) ? 90.0F : -90.0F);
+            mod.setYawAndPitch((float) (mod.getYaw() + x / 8.0D), (float) (mod.getPitch() + y * invert / 8.0D));
+            if (Math.abs(mod.getPitch()) > 90.0F) mod.setYawAndPitch(mod.getYaw(), (mod.getPitch() > 0.0F) ? 90.0F : -90.0F);
         }
     }
 

@@ -2,11 +2,11 @@ package de.chloedev.cdnperspective.mixin;
 
 import de.chloedev.cdnperspective.Client;
 import de.chloedev.cdnperspective.mod.Mod;
+import de.chloedev.cdnperspective.util.Util;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.GameOptions;
-import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.option.Perspective;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
-public class MixinMinecraftClient {
+public abstract class MixinMinecraftClient {
 
     @Shadow
     @Nullable
@@ -27,37 +27,28 @@ public class MixinMinecraftClient {
     @Final
     public GameOptions options;
 
-    @Inject(method = "tick", at = @At("HEAD"))
+    @Inject(method = "tick", at = @At("TAIL"))
     public void tick(CallbackInfo ci) {
-        if (Client.getInstance().isForceDisabled()) {
-            return;
-        }
-        if (this.player == null) {
-            return;
-        }
-        KeyBinding keyBinding = Client.getInstance().getKeyBinding();
+        if (Client.getInstance().isForceDisabled() || this.player == null) return;
         Mod mod = Client.getInstance().getMod();
-        if (keyBinding.wasPressed()) {
-            mod.toggleEnabled();
-            mod.setYaw(this.player.getYaw());
-            mod.setPitch(this.player.getPitch());
+
+        // For some reason, KeyBinding#wasPressed doesn't work here, so I'm using KeyBinding#isPressed, which doesn't seem to break anything.
+        //if (Client.getInstance().getKeyBinding().wasPressed() || (this.options.togglePerspectiveKey.wasPressed() && mod.isEnabled())) {
+        if (Client.getInstance().getKeyBinding().wasPressed() || (this.options.togglePerspectiveKey.isPressed() && mod.isEnabled())) {
             if (mod.isEnabled()) {
-                if (!mod.isKeyPressed()) {
-                    mod.setLastPerspective(this.options.getPerspective());
-                    mod.toggleKeyPressed();
-                }
-                if (this.options.getPerspective() == Perspective.THIRD_PERSON_FRONT) {
-                    mod.setYaw(((180 + this.player.getYaw() + 180) % 360) - 180);
-                    mod.setPitch(-this.player.getPitch());
-                }
-                this.options.setPerspective(Perspective.THIRD_PERSON_BACK);
+                options.setPerspective(mod.getLastPerspective());
+                Util.debug("Disabled 3D-Perspective");
             } else {
-                this.options.setPerspective(mod.getLastPerspective());
-                mod.toggleKeyPressed();
+                mod.setLastPerspective(this.options.getPerspective());
+                this.options.setPerspective(Perspective.THIRD_PERSON_BACK);
+                if (mod.getLastPerspective() == Perspective.THIRD_PERSON_FRONT) {
+                    mod.setYawAndPitch(((180 + this.player.getYaw() + 180) % 360) - 180, -this.player.getPitch());
+                } else {
+                    mod.setYawAndPitch(this.player.getYaw(), this.player.getPitch());
+                }
+                Util.debug("Enabled 3D-Perspective");
             }
-        }
-        if (mod.isEnabled() && this.options.getPerspective() != Perspective.THIRD_PERSON_BACK) {
-            mod.toggleEnabled();
+            mod.setEnabled(!mod.isEnabled());
         }
     }
 
