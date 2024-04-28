@@ -16,6 +16,9 @@
   "entrypoints": {
     "client": [
       "de.chloedev.cdnperspective.Client"
+    ],
+    "server": [
+      "de.chloedev.cdnperspective.Server"
     ]
   },
   "mixins": [

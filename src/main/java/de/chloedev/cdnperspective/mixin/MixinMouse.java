@@ -13,10 +13,10 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class MixinMouse {
 
     @Inject(method = "updateMouse", at = @At(value = "INVOKE", target = "net/minecraft/client/tutorial/TutorialManager.onUpdateMouse(DD)V"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-    private void updateMouseA(CallbackInfo ci, double d, double e, double x, double y, double f, double g, double h, int invert) {
+    private void updateMouseA(double timeDelta, CallbackInfo ci, double i, double j, double d, double e, double f, int k) {
         Mod mod = Client.getInstance().getMod();
         if (mod.isEnabled()) {
-            mod.setYawAndPitch((float) (mod.getYaw() + x / 8.0D), (float) (mod.getPitch() + y * invert / 8.0D));
+            mod.setYawAndPitch((float) (mod.getYaw() + i / 8.0D), (float) (mod.getPitch() + j * k / 8.0D));
             if (Math.abs(mod.getPitch()) > 90.0F) mod.setYawAndPitch(mod.getYaw(), (mod.getPitch() > 0.0F) ? 90.0F : -90.0F);
         }
     }
