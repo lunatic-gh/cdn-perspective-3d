@@ -32,20 +32,12 @@ public class Client implements ClientModInitializer {
         instance = this;
         KeyBindingHelper.registerKeyBinding(keyBinding = new KeyBinding("key.cdnperspective.toggle", InputUtil.Type.KEYSYM, 293, "key.categories.cdnperspective"));
         this.mod = new Mod(0, 0, false);
-        /*
-        ClientPlayNetworking.registerGlobalReceiver(new Identifier("cdnperspective", "is_disallowed"), (client, handler, buf, responseSender) -> {
-            this.forceDisabled = true;
-            if (client.player != null) {
-                client.player.sendMessage(Text.literal("§7[§bCDNPerspective§7] §6Oh! This server disabled the use of this mod. This means you can't use this feature on this server!"));
-            }
-        });
-         */
         PayloadTypeRegistry.playS2C().register(ModDisallowedPayload.ID, ModDisallowedPayload.CODEC);
         ClientPlayNetworking.registerGlobalReceiver(ModDisallowedPayload.ID, (payload, context) -> {
             MinecraftClient client = context.client();
             this.forceDisabled = true;
             if (client.player != null) {
-                client.player.sendMessage(Text.literal("§7[§bCDNPerspective§7] §6Oh! This server disabled the use of this mod. This means you can't use this feature on this server!"));
+                client.player.sendMessage(Text.literal("§7[§bCDNPerspective§7] §6Oh! This server disabled the use of this mod. This means you can't use this feature on this server!"), false);
             }
         });
     }

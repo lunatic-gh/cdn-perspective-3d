@@ -21,7 +21,7 @@ public class MixinCamera {
     @Shadow
     private float pitch;
 
-    @ModifyArgs(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/Camera;setRotation(FF)V", ordinal = 0))
+    @ModifyArgs(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/Camera;setRotation(FF)V", ordinal = 1))
     public void a(Args args) {
         Mod mod = Client.getInstance().getMod();
         if (mod.isEnabled()) {
